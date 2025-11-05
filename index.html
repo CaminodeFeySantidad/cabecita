@@ -1,45 +1,38 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Transmisión de Pantalla</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding-top: 20px; }
-    video { width: 80%; border: 2px solid #444; margin-top: 20px; }
-    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
-  </style>
+  <meta charset="UTF-8" />
+  <title>Compartir Pantalla</title>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
+  <h2>ID de Transmisión:</h2>
+  <p id="peer-id">Generando...</p>
 
-<h2>Compartir Pantalla</h2>
-<button id="start">Iniciar transmisión</button>
+  <button id="start">Iniciar Transmisión</button>
+  
+  <script>
+    const peer = new Peer({
+      host: '0.peerjs.com',
+      port: 443,
+      secure: true,
+      path: '/peerjs'
+    });
 
-<p><strong>ID para compartir:</strong> <span id="my-id" style="font-size:18px;color:blue;"></span></p>
+    peer.on('open', (id) => {
+      document.getElementById('peer-id').innerText = id;
+    });
 
-<video id="preview" autoplay></video>
+    document.getElementById('start').onclick = async () => {
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: false
+      });
 
-<script src="https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js"></script>
-<script>
-const peer = new Peer();
-const preview = document.getElementById("preview");
-let screenStream;
-
-// Mostrar ID cuando se conecte a PeerJS
-peer.on('open', id => {
-  document.getElementById("my-id").textContent = id;
-});
-
-// Capturar pantalla
-document.getElementById("start").onclick = async () => {
-  screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
-  preview.srcObject = screenStream;
-};
-
-// Cuando alguien llame, enviamos pantalla
-peer.on("call", call => {
-  call.answer(screenStream);
-});
-</script>
-
+      peer.on('call', (call) => {
+        call.answer(stream);
+      });
+    };
+  </script>
 </body>
 </html>
