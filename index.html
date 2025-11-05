@@ -26,11 +26,11 @@ document.getElementById("start").onclick = async () => {
   preview.srcObject = screenStream;
 };
 
-// ✅ Cuando alguien se conecte, enviar la pantalla
+// ✅ Cuando alguien llama, le envío mi pantalla
 peer.on("call", call => {
-  call.answer();
-  call.on("stream", () => {});
+  call.answer(screenStream);
 });
 </script>
 </body>
 </html>
+
