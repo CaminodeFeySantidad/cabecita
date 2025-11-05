@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Ver Pantalla</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 20px; }
+    video { width: 80%; border: 2px solid #444; margin-top: 20px; }
+    input, button { padding: 10px; margin-top: 10px; }
+  </style>
 </head>
 <body>
+
 <h2>Ver Transmisión</h2>
 
-<p>Ingresa el ID que te dio la persona que transmite:</p>
-<input id="id" placeholder="ID del transmisor">
+<input id="id" placeholder="ID del transmisor" style="width:250px;">
 <button id="ver">Ver</button>
 
-<video id="video" autoplay style="width:80%;border:1px solid #444;"></video>
+<video id="video" autoplay></video>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js"></script>
 <script>
@@ -20,8 +25,6 @@ const video = document.getElementById("video");
 
 document.getElementById("ver").onclick = () => {
   const id = document.getElementById("id").value;
-
-  // ✅ realizar la llamada correctamente
   const call = peer.call(id, null);
 
   call.on("stream", stream => {
@@ -29,5 +32,6 @@ document.getElementById("ver").onclick = () => {
   });
 };
 </script>
+
 </body>
 </html>
