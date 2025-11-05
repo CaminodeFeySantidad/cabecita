@@ -3,13 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Transmisión de Pantalla</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding-top: 20px; }
+    video { width: 80%; border: 2px solid #444; margin-top: 20px; }
+    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; }
+  </style>
 </head>
 <body>
+
 <h2>Compartir Pantalla</h2>
 <button id="start">Iniciar transmisión</button>
-<p>ID de transmisión: <span id="my-id"></span></p>
 
-<video id="preview" autoplay style="width:80%;border:1px solid #444;"></video>
+<p><strong>ID para compartir:</strong> <span id="my-id" style="font-size:18px;color:blue;"></span></p>
+
+<video id="preview" autoplay></video>
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js"></script>
 <script>
@@ -17,20 +24,22 @@ const peer = new Peer();
 const preview = document.getElementById("preview");
 let screenStream;
 
+// Mostrar ID cuando se conecte a PeerJS
 peer.on('open', id => {
   document.getElementById("my-id").textContent = id;
 });
 
+// Capturar pantalla
 document.getElementById("start").onclick = async () => {
-  screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
   preview.srcObject = screenStream;
 };
 
-// ✅ Cuando alguien llama, le envío mi pantalla
+// Cuando alguien llame, enviamos pantalla
 peer.on("call", call => {
   call.answer(screenStream);
 });
 </script>
+
 </body>
 </html>
-
