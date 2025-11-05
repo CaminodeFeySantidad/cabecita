@@ -21,28 +21,17 @@
 
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
-  const viewerVideo = document.getElementById("viewer");
-  const connectBtn = document.getElementById("connectBtn");
-
-  const peer = new Peer(); // visor obtiene su ID
-
-  peer.on('open', () => {       
-    console.log("Visor listo. Puedes conectar ahora.");
+  const peer = new Peer({
+    host: 'peerjs.com',
+    port: 443,
+    secure: true,
+    path: '/peerserver'
   });
 
-  connectBtn.onclick = () => {
+  const viewerVideo = document.getElementById("viewer");
+  document.getElementById("connectBtn").onclick = () => {
     const remoteId = document.getElementById("remoteId").value.trim();
-    if(!remoteId) {
-      alert("Debes ingresar el ID del transmisor.");
-      return;
-    }
-
     const call = peer.call(remoteId, undefined);
-
-    if (!call) {
-      alert("No se pudo conectar. Asegúrate de que la transmisión está encendida.");
-      return;
-    }
 
     call.on('stream', (stream) => {
       viewerVideo.srcObject = stream;
