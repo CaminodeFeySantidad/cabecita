@@ -16,12 +16,17 @@
 <p id="myId">Generando...</p>
 
 <button id="startBtn">Iniciar Transmisión</button>
-
 <video id="screen" autoplay muted></video>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <script>
-  const peer = new Peer();
+  const peer = new Peer({
+    host: 'peerjs.com',
+    port: 443,
+    secure: true,
+    path: '/peerserver'
+  });
+
   const myIdElement = document.getElementById("myId");
   const videoElement = document.getElementById("screen");
 
@@ -31,21 +36,8 @@
 
   document.getElementById("startBtn").onclick = async () => {
     try {
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
-
-      peer.on('call', (call) => {
-        call.answer(screenStream);
-      });
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
 
       videoElement.srcObject = screenStream;
 
-    } catch (err) {
-      alert("Debes permitir el acceso a compartir pantalla.");
-      console.error(err);
-    }
-  };
-</script>
-
-</body>
-</html>
-
+      pee
