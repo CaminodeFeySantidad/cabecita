@@ -1,38 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Compartir Pantalla</title>
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transmitir Pantalla</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #f2f2f2; margin: 0; padding: 50px;}
+    video { width: 90%; max-width: 900px; border: 2px solid #444; margin-top: 25px;}
+    button { padding: 12px 25px; font-size: 18px; margin-top: 25px; cursor: pointer;}
+  </style>
 </head>
 <body>
-  <h2>ID de Transmisión:</h2>
-  <p id="peer-id">Generando...</p>
 
-  <button id="start">Iniciar Transmisión</button>
-  
-  <script>
-    const peer = new Peer({
-      host: '0.peerjs.com',
-      port: 443,
-      secure: true,
-      path: '/peerjs'
-    });
+<h2>ID de Transmisión:</h2>
+<p id="myId">Generando...</p>
 
-    peer.on('open', (id) => {
-      document.getElementById('peer-id').innerText = id;
-    });
+<button id="startBtn">Iniciar Transmisión</button>
 
-    document.getElementById('start').onclick = async () => {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: false
-      });
+<video id="screen" autoplay muted></video>
+
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+<script>
+  const peer = new Peer();
+  const myIdElement = document.getElementById("myId");
+  const videoElement = document.getElementById("screen");
+
+  peer.on('open', (id) => {
+    myIdElement.innerText = id;
+  });
+
+  document.getElementById("startBtn").onclick = async () => {
+    try {
+      const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
 
       peer.on('call', (call) => {
-        call.answer(stream);
+        call.answer(screenStream);
       });
-    };
-  </script>
+
+      videoElement.srcObject = screenStream;
+
+    } catch (err) {
+      alert("Debes permitir el acceso a compartir pantalla.");
+      console.error(err);
+    }
+  };
+</script>
+
 </body>
 </html>
