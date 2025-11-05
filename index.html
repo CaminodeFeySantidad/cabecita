@@ -13,21 +13,24 @@
 
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js"></script>
 <script>
-const peer = new Peer(); // crea conexión con servidor PeerJS
+const peer = new Peer();
 const preview = document.getElementById("preview");
+let screenStream;
 
 peer.on('open', id => {
   document.getElementById("my-id").textContent = id;
 });
 
 document.getElementById("start").onclick = async () => {
-  const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-  preview.srcObject = stream;
-
-  peer.on("connection", conn => {
-    const call = peer.call(conn.peer, stream);
-  });
+  screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  preview.srcObject = screenStream;
 };
+
+// ✅ Cuando alguien se conecte, enviar la pantalla
+peer.on("call", call => {
+  call.answer();
+  call.on("stream", () => {});
+});
 </script>
 </body>
 </html>
