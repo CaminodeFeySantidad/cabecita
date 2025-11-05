@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Ver Pantalla en Vivo</title>
-<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Ver Pantalla</title>
 </head>
 <body>
+<h2>Ver Transmisión</h2>
 
-<h2>Pantalla en Vivo</h2>
-<video id="video" autoplay style="width:100%; max-width:100%; border:1px solid #aaa;"></video>
+<p>Ingresa el ID que te dio el transmisor:</p>
+<input id="id" placeholder="ID del transmisor">
+<button id="ver">Ver</button>
 
+<video id="video" autoplay style="width:80%;border:1px solid #444;"></video>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1/dist/peerjs.min.js"></script>
 <script>
 const peer = new Peer();
-const call = peer.call("pantalla-cabecita", null);
-call.on("stream", stream => {
-  document.getElementById("video").srcObject = stream;
-});
-</script>
+const video = document.getElementById("video");
 
+document.getElementById("ver").onclick = () => {
+  const id = document.getElementById("id").value;
+  const call = peer.call(id, null);
+
+  call.on("stream", stream => {
+    video.srcObject = stream;
+  });
+};
+</script>
 </body>
 </html>
