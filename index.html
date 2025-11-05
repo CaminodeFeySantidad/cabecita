@@ -1,63 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compartir mi pantalla en vivo</title>
-  <style>
-    #screen {
-      width: 100%;
-      height: 100%;
-      border: 1px solid #ccc;
-    }
-    body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      background-color: #f0f0f0;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 20px;
-      cursor: pointer;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Transmitiendo Pantalla en Vivo</title>
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
 <body>
 
-<h2>Haz clic en el botón para compartir tu pantalla</h2>
-<video id="screen" autoplay></video>
-<button id="startBtn">Compartir Pantalla</button>
+<h2>Transmitiendo Pantalla</h2>
+<p>Comparte este enlace para que otros vean tu pantalla:</p>
+<h3>https://caminodefeysantidad.github.io/cabecita/ver.html</h3>
 
 <script>
-  // Función para capturar la pantalla
-  async function startScreenShare() {
-    try {
-      // Usamos la API de MediaDevices para obtener la pantalla
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: true
-      });
-      
-      // Referencia al elemento de video
-      const videoElement = document.getElementById("screen");
-      
-      // Asignamos el stream al video para mostrarlo
-      videoElement.srcObject = stream;
-    } catch (err) {
-      console.error("Error al capturar la pantalla: ", err);
-    }
-  }
-
-  // Asignar el evento del botón para iniciar la captura de pantalla
-  document.getElementById("startBtn").addEventListener("click", startScreenShare);
+const peer = new Peer("pantalla-cabecita");
+async function start() {
+  const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+  peer.on("connection", () => {});
+  peer.on("call", call => {
+    call.answer(stream);
+  });
+}
+start();
 </script>
 
 </body>
